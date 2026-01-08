@@ -140,6 +140,7 @@ If all tests pass, you're ready to use the RLM system!
 ### Example 1: Simple Query (No Recursion)
 
 ```bash
+uv run python examples/simple_query.py
 python examples/simple_query.py
 ```
 

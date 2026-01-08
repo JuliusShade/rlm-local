@@ -4,7 +4,11 @@ Demonstrates RLM with a simple question that should NOT trigger recursion
 """
 
 import sys
-sys.path.insert(0, "../src")
+from pathlib import Path
+
+# Add project root to path so we can import from src
+project_root = Path(__file__).parent.parent
+sys.path.insert(0, str(project_root))
 
 from src.rlm import RLMController
 

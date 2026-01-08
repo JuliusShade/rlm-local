@@ -3,7 +3,11 @@ Basic test to verify RLM system works
 """
 
 import sys
-sys.path.insert(0, "src")
+from pathlib import Path
+
+# Add project root to path (current directory since test is in root)
+project_root = Path(__file__).parent
+sys.path.insert(0, str(project_root))
 
 from src.rlm.client import OllamaClient
 from src.rlm import RLMController

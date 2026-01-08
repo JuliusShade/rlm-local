@@ -4,10 +4,14 @@ Software engineering specific use case showing recursion tree
 """
 
 import sys
-sys.path.insert(0, "../src")
+from pathlib import Path
+import json
+
+# Add project root to path so we can import from src
+project_root = Path(__file__).parent.parent
+sys.path.insert(0, str(project_root))
 
 from src.rlm import RLMController
-import json
 
 
 def main():

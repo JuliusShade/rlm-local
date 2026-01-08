@@ -100,19 +100,23 @@ class RLMLogger:
         if not self.enable:
             return
 
+        # Use ASCII-safe symbols for Windows
+        start_symbol = ">" if sys.platform == 'win32' else "▶"
+        check_symbol = "[OK]" if sys.platform == 'win32' else "✓"
+
         if status == "START":
             self.info(
                 f"\n{Colors.BOLD}{Colors.CYAN}{'='*60}{Colors.RESET}"
             )
             self.info(
-                f"{Colors.BOLD}{Colors.CYAN}▶ {stage_name}{Colors.RESET}"
+                f"{Colors.BOLD}{Colors.CYAN}{start_symbol} {stage_name}{Colors.RESET}"
             )
             self.info(
                 f"{Colors.BOLD}{Colors.CYAN}{'='*60}{Colors.RESET}"
             )
         else:
             self.info(
-                f"{Colors.GREEN}✓ {stage_name} complete{Colors.RESET}\n"
+                f"{Colors.GREEN}{check_symbol} {stage_name} complete{Colors.RESET}\n"
             )
 
     def recursion_tree(self, node: RecursionNode, indent: int = 0):
@@ -126,6 +130,16 @@ class RLMLogger:
         if not self.enable or not node:
             return
 
+        # Use ASCII-safe tree symbols for Windows
+        if sys.platform == 'win32':
+            branch = "+-"
+            pipe = "|"
+            arrow = "->"
+        else:
+            branch = "├─"
+            pipe = "│"
+            arrow = "→"
+
         prefix = "  " * indent
         depth_marker = f"{Colors.DIM}[depth {node.depth}]{Colors.RESET}"
 
@@ -133,15 +147,15 @@ class RLMLogger:
         if node.complexity:
             complexity_color = Colors.YELLOW if node.complexity == "COMPLEX" else Colors.GREEN
             complexity_marker = f"{complexity_color}[{node.complexity}]{Colors.RESET}"
-            self.info(f"{prefix}├─ {depth_marker} {complexity_marker} {Colors.BRIGHT_WHITE}{node.question}{Colors.RESET}")
+            self.info(f"{prefix}{branch} {depth_marker} {complexity_marker} {Colors.BRIGHT_WHITE}{node.question}{Colors.RESET}")
         else:
-            self.info(f"{prefix}├─ {depth_marker} {Colors.BRIGHT_WHITE}{node.question}{Colors.RESET}")
+            self.info(f"{prefix}{branch} {depth_marker} {Colors.BRIGHT_WHITE}{node.question}{Colors.RESET}")
 
         # Print answer if available
         if node.answer:
             # Truncate long answers
             answer_preview = node.answer[:100] + "..." if len(node.answer) > 100 else node.answer
-            self.info(f"{prefix}│  {Colors.DIM}→ {answer_preview}{Colors.RESET}")
+            self.info(f"{prefix}{pipe}  {Colors.DIM}{arrow} {answer_preview}{Colors.RESET}")
 
         # Print children recursively
         for child in node.children:

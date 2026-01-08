@@ -1,6 +1,81 @@
 # How to Run the RLM System
 
+## Prerequisites
+
+### Install uv (Recommended)
+
+`uv` is a fast Python package and project manager. It's recommended for managing the virtual environment.
+
+**Install uv:**
+
+**Windows (PowerShell):**
+```powershell
+powershell -ExecutionPolicy ByPass -c "irm https://astral.sh/uv/install.ps1 | iex"
+```
+
+**macOS/Linux:**
+```bash
+curl -LsSf https://astral.sh/uv/install.sh | sh
+```
+
+**Or via pip:**
+```bash
+pip install uv
+```
+
+Verify installation:
+```bash
+uv --version
+```
+
+**See [uv Quick Reference](UV_QUICK_REFERENCE.md) for more uv commands and tips.**
+
 ## Quick Start
+
+### Step 0: Set Up Python Virtual Environment (Using uv)
+
+**Create and activate virtual environment:**
+
+```bash
+# Navigate to project directory
+cd local_llm
+
+# Create virtual environment with uv
+uv venv
+
+# Activate the virtual environment
+# Windows (PowerShell):
+.venv\Scripts\Activate.ps1
+
+# Windows (CMD):
+.venv\Scripts\activate.bat
+
+# macOS/Linux:
+source .venv/bin/activate
+```
+
+**Install dependencies with uv:**
+```bash
+# uv will install dependencies much faster than pip
+uv pip install -r requirements.txt
+```
+
+**Alternative: Using standard Python venv**
+
+If you prefer not to use uv:
+```bash
+# Create virtual environment
+python -m venv .venv
+
+# Activate (Windows PowerShell)
+.venv\Scripts\Activate.ps1
+
+# Activate (macOS/Linux)
+source .venv/bin/activate
+
+# Install dependencies
+pip install -r requirements.txt
+```
 
 ### Step 1: Ensure Ollama is Running
 
@@ -17,18 +92,13 @@ ollama list
 
 You should see `qwen2.5-coder:14b` in the list.
 
-### Step 2: Install Dependencies
-
-```bash
-cd local_llm
-pip install -r requirements.txt
-```
-
-### Step 3: Run Basic Tests
+### Step 2: Run Basic Tests
 
 Verify everything works:
 
 ```bash
+uv run python test_basic.py
+OR
 python test_basic.py
 ```
 
@@ -236,7 +306,49 @@ Edit `src/rlm/config.py` or pass config dict:
 }
 ```
 
+## Virtual Environment Management
+
+### Deactivating the Virtual Environment
+
+When you're done working:
+```bash
+deactivate
+```
+
+### Reactivating Later
+
+```bash
+cd local_llm
+
+# Windows PowerShell
+.venv\Scripts\Activate.ps1
+
+# macOS/Linux
+source .venv/bin/activate
+```
+
+### Python Version
+
+This project uses Python 3.9+ (specified in `.python-version`). uv will automatically use the correct Python version if available on your system.
+
 ## Troubleshooting
+
+### Virtual Environment Issues
+
+**Problem**: Cannot activate virtual environment
+
+**Fix**: Make sure you created it first
+```bash
+uv venv  # or: python -m venv .venv
+```
+
+**Problem**: `uv` command not found after installation
+
+**Fix**: Restart your terminal or add uv to PATH:
+```bash
+# Windows: uv is typically installed to %USERPROFILE%\.cargo\bin
+# macOS/Linux: uv is typically installed to ~/.cargo/bin
+```
 
 ### Cannot Connect to Ollama
 
@@ -266,9 +378,18 @@ ollama pull qwen2.5-coder:14b
 ModuleNotFoundError: No module named 'pydantic'
 ```
 
-**Fix**: Install dependencies
+**Fix 1**: Make sure virtual environment is activated
 ```bash
-pip install -r requirements.txt
+# Check if activated (you should see (.venv) in prompt)
+# If not, activate it:
+.venv\Scripts\Activate.ps1  # Windows
+source .venv/bin/activate    # macOS/Linux
+```
+
+**Fix 2**: Install dependencies in the virtual environment
+```bash
+uv pip install -r requirements.txt
+# or: pip install -r requirements.txt
 ```
 
 ### Timeout Errors
@@ -286,6 +407,7 @@ config={"ollama": {"timeout": 300}}
 
 - Read the full [Usage Guide](usage_guide.md) for detailed information
 - Read [Architecture Details](../goals/rlm_architecture.md) to understand the design
+- Check out [uv Quick Reference](UV_QUICK_REFERENCE.md) for fast package management
 - Try creating your own questions and tasks
 - Experiment with different configuration settings
 - Extend the system (add RAG, tools, etc.)

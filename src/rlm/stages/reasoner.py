@@ -105,7 +105,7 @@ class RecursiveReasonerStage(Stage):
 
         # Base case 1: Max depth reached
         if depth >= self.max_depth:
-            self.logger.info(f"{'  ' * depth}→ Max depth reached, answering directly")
+            self.logger.info(f"{'  ' * depth}-> Max depth reached, answering directly")
             answer = self._direct_answer(question, context)
             node.complexity = "MAX_DEPTH"
             node.answer = answer
@@ -116,23 +116,23 @@ class RecursiveReasonerStage(Stage):
         node.complexity = complexity
 
         if complexity == "SIMPLE":
-            self.logger.info(f"{'  ' * depth}→ Assessed as SIMPLE, answering directly")
+            self.logger.info(f"{'  ' * depth}-> Assessed as SIMPLE, answering directly")
             answer = self._direct_answer(question, context)
             node.answer = answer
             return answer, node
 
         # Recursive case: Complex question - decompose and recurse
-        self.logger.info(f"{'  ' * depth}→ Assessed as COMPLEX, decomposing...")
+        self.logger.info(f"{'  ' * depth}-> Assessed as COMPLEX, decomposing...")
 
         sub_questions = self._decompose_question(question, context)
         node.sub_questions = sub_questions
 
-        self.logger.info(f"{'  ' * depth}→ Decomposed into {len(sub_questions)} sub-questions")
+        self.logger.info(f"{'  ' * depth}-> Decomposed into {len(sub_questions)} sub-questions")
 
         # Recursively answer each sub-question
         sub_answers = []
         for i, sub_q in enumerate(sub_questions, 1):
-            self.logger.info(f"{'  ' * depth}→ Sub-question {i}/{len(sub_questions)}")
+            self.logger.info(f"{'  ' * depth}-> Sub-question {i}/{len(sub_questions)}")
 
             sub_answer, sub_node = self._recursive_reason(
                 question=sub_q,
@@ -144,7 +144,7 @@ class RecursiveReasonerStage(Stage):
             node.children.append(sub_node)
 
         # Compose sub-answers into final answer
-        self.logger.info(f"{'  ' * depth}→ Composing {len(sub_answers)} sub-answers")
+        self.logger.info(f"{'  ' * depth}-> Composing {len(sub_answers)} sub-answers")
         final_answer = self._compose_answers(question, sub_answers)
         node.answer = final_answer
 
